@@ -24,6 +24,9 @@ const char pass[] = "maepu123";   // password
 const IPAddress ip(192, 168, 0, 15);      // IPアドレス
 const IPAddress subnet(255, 255, 255, 0); 
 
+//<input type='text' name='duty' value='duty'/>\
+//<input type='submit' name='setdu' valur='Set duty'/><br>\
+
 const char html[] =
 "<!DOCTYPE html><html lang='ja'><head><meta charset='UTF-8'>\
 <title>WiFi_Car Controller</title></head>\
@@ -68,6 +71,10 @@ static void brushed_motor_stop(mcpwm_unit_t mcpwm_num, mcpwm_timer_t timer_num)
     mcpwm_set_signal_low(mcpwm_num, timer_num, MCPWM_OPR_A);
     mcpwm_set_signal_low(mcpwm_num, timer_num, MCPWM_OPR_B);
 }
+
+float duty_rigt = 40.0;
+float duty_left = 40.0;
+
 
 void motor_init(void){
   //1. mcpwm gpio initialization
@@ -133,25 +140,33 @@ void loop() {
         }
        if (currentLine.endsWith("GET /?fo")) {
 //          Serial.println("OkFrt\n");
-          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, 20.0);
-          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, 20.0);
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
        if (currentLine.endsWith("GET /?le")) {
-          Serial.println("OkLe\n");
+//          Serial.println("OkLe\n");
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
        if (currentLine.endsWith("GET /?ri")) {
-          Serial.println("OkRi\n");
+//          Serial.println("OkRi\n");
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
         if (currentLine.endsWith("GET /?ba")) {
 //          Serial.println("OkBa\n");
-          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, 20.0);
-          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, 20.0);
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
        if (currentLine.endsWith("GET /?bl")) {
-          Serial.println("OKBL\n");
+//          Serial.println("OKBL\n");
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
        if (currentLine.endsWith("GET /?br")) {
-          Serial.println("OKRI\n");
+//          Serial.println("OKRI\n");
+          brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty_rigt);
+          brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty_left);
        }
        if (currentLine.endsWith("GET /?st")) {
 //          Serial.println("OKSt\n");
