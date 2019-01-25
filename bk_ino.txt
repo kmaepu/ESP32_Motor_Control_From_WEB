@@ -30,11 +30,11 @@ const char html[] =
 <title>WiFi_Car Controller</title></head>\
 <body><p>Motor Controller</p>\
 <form method='get'>\
-<a href='fo'>Front</a><br>\
-<a href='le'>Left</a>   \
-<a href='st'>Stop</a>   \
-<a href='ri'>Riht</a><br>\
-<a href='ba'>Back</a><br>\
+<input type='submit' name='fo' value='Fo' /><br>\
+<input type='submit' name='le' value='Le' />\
+<input type='submit' name='st' value='St' />\
+<input type='submit' name='ri' value='Ri' /><br>\
+<input type='submit' name='ba' value='Ba' /><br><br>\
 <input type='text' name='du' value='40'/>\
 <input type='submit' name='set' valuer='Set duty'/><br>\
 </form></body></html>";
@@ -119,7 +119,7 @@ void loop() {
     while (client.connected()) {            // loop while the client's connected
       if (client.available()) {             // if there's bytes to read from the client,
         char c = client.read();             // read a byte, then
-        Serial.write(c);
+//        Serial.write(c);
         if (c == '\n') {   
           if (currentLine.length() == 0) {
             client.println("HTTP/1.1 200 OK");
@@ -137,35 +137,35 @@ void loop() {
 
        /* コマンド解析 */
        String cmd = currentLine.substring(2,6);    // command
-//       Serial.println(cmd);
-       if(currentLine.endsWith("GET /du")){
-          duty = currentLine.substring(11,2).toFloat();   // parametor
+       Serial.println(cmd);
+       if(cmd.compareTo("se")){
+          duty = currentLine.substring(2,15).toFloat();   // parametor
        }
-       if (currentLine.endsWith("GET /fo")) {
+       if (cmd.compareTo("fo")) {
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-       if (currentLine.endsWith("GET /le")) {
+       if (cmd.compareTo("le")) {
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-       if (currentLine.endsWith("GET /ri")) {
+       if (cmd.compareTo("ri")) {
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-        if (currentLine.endsWith("GET /ba")) {
+        if (cmd.compareTo("ba")) {
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-       if (currentLine.endsWith("bl")) {
+       if (cmd.compareTo("bl")) {
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-       if (currentLine.endsWith("br")) {
+       if (cmd.compareTo("br")) {
           brushed_motor_forward(MCPWM_UNIT_0, MCPWM_TIMER_0, duty);
           brushed_motor_backward(MCPWM_UNIT_0, MCPWM_TIMER_1, duty);
        }
-       if (currentLine.endsWith("GET /st")) {
+       if (cmd.compareTo("st")) {
           brushed_motor_stop(MCPWM_UNIT_0, MCPWM_TIMER_0);
           brushed_motor_stop(MCPWM_UNIT_0, MCPWM_TIMER_1);
        }
